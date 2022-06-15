@@ -2,11 +2,16 @@
 """
 Fetch planet information from nasa.org and store it in a json file.
 """
+
+# Создадим модуль для создания справочника нашей Солнечной системы
+
+
 import numpy as np
 import json
 from astropy.time import Time
 from astroquery.jplhorizons import Horizons
 
+# Описываем наши планеты
 sim_start_date = "2018-01-01"     # simulating a solar system starting from this date
 names = ['Mercury', 'Venus', 'Earth', 'Mars']
 sizes = [0.38, 0.95, 1., 0.53]
@@ -14,6 +19,8 @@ nasaids = [1, 2, 3, 4]   # The 1st, 2nd, 3rd (399 and 301), 4th planet in solar 
 
 data = dict(info="Solar planets database, including positions and velocities at the given date",
             date=sim_start_date)
+
+# Вычисляем параметры для планет
 for i in range(len(nasaids)):
     nasaid = nasaids[i]
     obj = Horizons(id=nasaid, location="@sun", epochs=Time(sim_start_date).jd, id_type='id').vectors()
@@ -24,5 +31,7 @@ for i in range(len(nasaids)):
         "v": [np.double(obj[vxi]) for vxi in ['vx', 'vy', 'vz']]
     }
 
+
+# Записываем все параметры в json, который послужит справочником
 with open("planets.json", 'w') as f:
     json.dump(data, f, indent=4)
